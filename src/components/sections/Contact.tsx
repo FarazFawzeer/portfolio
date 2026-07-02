@@ -65,94 +65,37 @@ export function Contact() {
     and custom software development.
             </h4>
 
-            <form
-                className="form-contact"
-                id="contactform"
-                onSubmit={handleSubmit}
-                noValidate
+           <div className="contact-options effectFade fadeUp no-div">
+
+   
+
+    <div className="mt-4">
+
+        <p className="text-body-2">
+            
+            <a
+                href={`mailto:${profile.email}`}
+                className="link text-black-72"
             >
-                {success && (
-                    <div
-                        className="flat-alert msg-success"
-                        style={{ marginBottom: 20 }}
-                    >
-                        ✅ Thank you! Your message has been sent successfully.
-                        I'll get back to you as soon as possible.
-                    </div>
-                )}
+               -  {profile.email}
+            </a>
+        </p>
 
-                {error && (
-                    <div
-                        className="flat-alert msg-error"
-                        style={{ marginBottom: 20 }}
-                    >
-                         {error}
-                    </div>
-                )}
+        <p className="text-body-2 mt-3">
+            
+            <a
+                href="https://www.linkedin.com/in/faraz-fawzeer-768258237"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link text-black-72"
+            >
+               -  LinkedIn Profile
+            </a>
+        </p>
 
-                <div className="form-content effectFade fadeUp no-div">
+    </div>
 
-                    <fieldset className="field-ip">
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Full Name *"
-                            required
-                        />
-                    </fieldset>
-
-                    <fieldset className="field-ip">
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email Address *"
-                            required
-                        />
-                    </fieldset>
-
-                    <fieldset className="field-ip">
-                        <input
-                            type="text"
-                            name="subject"
-                            placeholder="Subject *"
-                            required
-                        />
-                    </fieldset>
-
-                    <fieldset className="field-ip">
-                        <textarea
-                            name="message"
-                            rows={6}
-                            placeholder="Tell me about your project..."
-                            required
-                        />
-                    </fieldset>
-
-                </div>
-
-                <div className="form-action effectFade fadeUp no-div">
-
-                    <div className="send-wrap">
-                        <button
-                            type="submit"
-                            className="tf-btn animate-btn animate-dark"
-                            disabled={loading}
-                        >
-                            <span className="text-body-3">
-                                {loading ? "Sending..." : "Send Message"}
-                            </span>
-                        </button>
-                    </div>
-
-                    <a
-                        href={`mailto:${profile.email}`}
-                        className="text-body-1 link letter-space--2 text-black-72"
-                    >
-                        {profile.email}
-                    </a>
-
-                </div>
-            </form>
+</div>
         </div>
     );
 }
