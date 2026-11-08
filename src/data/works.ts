@@ -9,9 +9,36 @@ export type Work = {
   logo: string;
   liveUrl?: string;
   githubUrl?: string;
+  /**
+   * Walkthrough video of the admin side (e.g. an unlisted YouTube or Loom link).
+   * Record it on a demo copy with sample data, never the client's live system.
+   * When set, a "Watch Demo" button appears on the project card.
+   */
+  demoVideoUrl?: string;
 };
 
 export const works: Work[] = [
+  {
+    title: "Mazz Laptop Hub",
+    description:
+      "E-commerce storefront for a Negombo laptop retailer selling business-grade Dell, HP and Lenovo laptops, upgrades and accessories, with an interactive setup builder and WhatsApp-based ordering.",
+    year: "2026",
+    role: "Full Stack",
+    tags: ["Laravel", "PHP", "MySQL", "JavaScript", "E-Commerce"],
+    features: [
+      "Laptop catalog with real photos and full specs",
+      "Build-your-setup configurator with live price totals",
+      "Parts and accessories store",
+      "WhatsApp enquiry and order flow",
+      "Live stock status for each unit",
+      "Admin panel for products and inventory",
+    ],
+    image: "/assets/images/section/mazzlaptop.jpg",
+    logo: "/assets/images/brand/mazzlaptop.png",
+    liveUrl: "https://mazzlaptop.lk/",
+    // demoVideoUrl: "https://youtu.be/your-unlisted-video",
+  },
+
   {
     title: "VacayGuider",
     description:
@@ -48,9 +75,9 @@ export const works: Work[] = [
     "Customer inquiry and communication system",
     "REST API integration for frontend consumption"
   ],
-   image: "/assets/images/section/digihub.jpg",
-    logo: "/assets/images/brand/digihub.png",
-  liveUrl: "https://learn.nexasdigital.com/",
+  image: "/assets/images/section/digihub-2026.jpg",
+  logo: "/assets/images/brand/digihub-2026.png",
+  liveUrl: "https://digihubcourses.com/",
 
 },
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useLenis } from "lenis/react";
 import { navItems } from "@/data/nav";
 
 type DesktopSidebarProps = {
@@ -23,9 +24,12 @@ export function DesktopSidebar({
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const lenis = useLenis();
+
   const goTop = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (lenis) lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

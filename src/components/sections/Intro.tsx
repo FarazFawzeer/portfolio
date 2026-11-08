@@ -1,4 +1,5 @@
 import { BrandSlider } from "@/components/BrandSlider";
+import { profile } from "@/data/profile";
 
 export function Intro() {
     return (
@@ -11,7 +12,7 @@ export function Intro() {
                         width={23}
                         height={31}
                         src="/assets/images/avatar/avatar-boy.jpg"
-                        alt="avatar"
+                        alt={profile.fullName}
                     />
                 </div>
                 <div className="author-info letter-space--05">
@@ -89,18 +90,18 @@ export function Intro() {
             <div className="box-counter effectFade fadeUp no-div">
                 <div className="wg-counter">
                     <p className="counter h1 d-flex font-2 letter-space--2">
-                        <span className="number" data-speed="1000" data-to="4">
+                        <span className="number" data-speed="1000" data-to={profile.yearsExperience}>
                             0
                         </span>
                         +
                     </p>
                     <p className="text text-black-56 text-body-3">
-                        Year of experience
+                        Years of experience
                     </p>
                 </div>
                <div className="wg-counter">
     <p className="counter h1 d-flex font-2 letter-space--2">
-        <span className="number" data-speed="1000" data-to="8">
+        <span className="number" data-speed="1000" data-to={profile.projectsCompleted}>
             0
         </span>
         +

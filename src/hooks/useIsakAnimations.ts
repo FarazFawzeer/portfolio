@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -18,13 +18,11 @@ function ensurePlugins() {
  * Run once after page DOM is ready inside a "use client" page component.
  */
 export function useIsakAnimations() {
-    const hasRun = useRef(false);
-
     useEffect(() => {
-        // Guard against React StrictMode double-invocation
-        if (hasRun.current) return;
-        hasRun.current = true;
-
+        // No run-once guard: React StrictMode (dev) mounts, cleans up and mounts
+        // again. A guard skipped the second mount after cleanup had killed every
+        // trigger, leaving animations dead in dev. The cleanup below makes a
+        // re-run safe instead.
         ensurePlugins();
 
         const cleanups: Array<() => void> = [];
@@ -165,12 +163,16 @@ export function useIsakAnimations() {
             const delay = el.dataset.delay ? parseFloat(el.dataset.delay) : 0;
             toVars.delay = delay;
 
+            const alreadyWrapped = (el.parentElement as HTMLElement | null)
+                ?.dataset.fadeWrap;
             if (
                 el.classList.contains("fadeUp") &&
-                !el.classList.contains("no-div")
+                !el.classList.contains("no-div") &&
+                !alreadyWrapped
             ) {
                 wrapper = document.createElement("div");
                 wrapper.classList.add("overflow-hidden");
+                wrapper.dataset.fadeWrap = "1";
                 el.parentNode?.insertBefore(wrapper, el);
                 wrapper.appendChild(el);
             }
@@ -260,84 +262,58 @@ export function useIsakAnimations() {
             );
         });
 
-        /* ---------------- Work / sticky-item sidebar active ---------------- */
-        let isClickScrolling = false;
-        let clickScrollTimer: ReturnType<typeof setTimeout> | null = null;
+        /* ---------------- Work / sticky-item sidebar active ----------------
+         * While the project list scrolls past, the profile sidebar hides and the
+         * active project's details panel (.wrap, fixed on the left) shows.
+         *
+         * Each project owns a back-to-back, non-overlapping zone: from its own top
+         * reaching 132px until the NEXT project's top reaches 132px (the last one
+         * ends when its bottom reaches 68px). State is derived from isActive in
+         * onToggle, so it's always correct, even after fast scrolls or nav jumps.
+         */
         const sidebar = document.querySelector(".sidebar-user");
-        const works = document.querySelectorAll<HTMLElement>(".sticky-item");
+        const works = Array.from(
+            document.querySelectorAll<HTMLElement>(".sticky-item"),
+        );
         if (sidebar && works.length) {
-            const firstWork = works[0];
             const lastWork = works[works.length - 1];
-            const sidebarTrigger = ScrollTrigger.create({
-                trigger: firstWork,
-                start: "top 132px",
-                endTrigger: lastWork,
-                end: "bottom 68px",
-                onEnter: () =>
-                    !isClickScrolling && sidebar.classList.add("active"),
-                onLeave: () =>
-                    !isClickScrolling && sidebar.classList.remove("active"),
-                onEnterBack: () =>
-                    !isClickScrolling && sidebar.classList.add("active"),
-                onLeaveBack: () =>
-                    !isClickScrolling && sidebar.classList.remove("active"),
-                invalidateOnRefresh: true,
-            });
-            triggers.push(sidebarTrigger);
 
-            works.forEach((work) => {
+            triggers.push(
+                ScrollTrigger.create({
+                    trigger: works[0],
+                    start: "top 132px",
+                    endTrigger: lastWork,
+                    end: "bottom 68px",
+                    invalidateOnRefresh: true,
+                    onToggle: (self) =>
+                        sidebar.classList.toggle("active", self.isActive),
+                }),
+            );
+
+            works.forEach((work, i) => {
                 const wrap = work.querySelector(".wrap");
                 if (!wrap) return;
-                const t = ScrollTrigger.create({
-                    trigger: work,
-                    start: "top 132px",
-                    end: "bottom 68px",
-                    onEnter: () => {
-                        if (isClickScrolling) return;
-                        document
-                            .querySelectorAll(".sticky-item .wrap")
-                            .forEach((el) => el.classList.remove("active"));
-                        wrap.classList.add("active");
-                    },
-                    onEnterBack: () => {
-                        if (isClickScrolling) return;
-                        document
-                            .querySelectorAll(".sticky-item .wrap")
-                            .forEach((el) => el.classList.remove("active"));
-                        wrap.classList.add("active");
-                    },
-                    onLeave: () => {
-                        if (!isClickScrolling) wrap.classList.remove("active");
-                    },
-                    onLeaveBack: () => {
-                        if (!isClickScrolling) wrap.classList.remove("active");
-                    },
-                    invalidateOnRefresh: true,
-                });
-                triggers.push(t);
+                const next = works[i + 1];
+                triggers.push(
+                    ScrollTrigger.create({
+                        trigger: work,
+                        start: "top 132px",
+                        ...(next
+                            ? { endTrigger: next, end: "top 132px" }
+                            : { end: "bottom 68px" }),
+                        invalidateOnRefresh: true,
+                        onToggle: (self) =>
+                            wrap.classList.toggle("active", self.isActive),
+                    }),
+                );
             });
-
-            const onAnchorClick = () => {
-                isClickScrolling = true;
-                if (clickScrollTimer) clearTimeout(clickScrollTimer);
-                clickScrollTimer = setTimeout(() => {
-                    isClickScrolling = false;
-                }, 800);
-            };
-            const anchors =
-                document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]');
-            anchors.forEach((a) => a.addEventListener("click", onAnchorClick));
-            cleanups.push(() =>
-                anchors.forEach((a) =>
-                    a.removeEventListener("click", onAnchorClick),
-                ),
-            );
         }
 
         /* ---------------- Flip Animation (gsap-anime-2) ---------------- */
         const flipContainer = document.querySelector(".gsap-anime-2");
         if (flipContainer) {
             const cards = document.querySelectorAll<HTMLElement>(".flip-image");
+            let flipTl: gsap.core.Timeline | null = null;
             const animateFlip = () => {
                 if (!cards.length) return;
                 const isMobile = window.innerWidth < 575;
@@ -353,6 +329,9 @@ export function useIsakAnimations() {
                     card.style.zIndex = String(i + 1);
                 });
 
+                // Replace (not stack) the previous timeline and its ScrollTrigger
+                flipTl?.scrollTrigger?.kill();
+                flipTl?.kill();
                 const tl = gsap.timeline({
                     defaults: { ease: "power3.out" },
                     scrollTrigger: {
@@ -393,6 +372,7 @@ export function useIsakAnimations() {
                     ease: "power2.out",
                     delay: 0.3,
                 });
+                flipTl = tl;
             };
             animateFlip();
             const onResize = () => {
@@ -582,9 +562,37 @@ export function useIsakAnimations() {
             ),
         );
 
-        /* ---------------- Refresh ScrollTrigger after layout settles ---------------- */
-        const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 100);
-        cleanups.push(() => clearTimeout(refreshTimer));
+        /* ---------------- Re-measure triggers whenever layout settles ----------------
+         * Trigger positions are measured at refresh time. Fonts, images and late
+         * content change the page height afterwards, which used to leave every
+         * trigger (incl. the project panels) firing at the wrong scroll position.
+         */
+        let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+        const scheduleRefresh = () => {
+            if (refreshTimer) clearTimeout(refreshTimer);
+            refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 150);
+        };
+        scheduleRefresh();
+
+        if (document.readyState !== "complete") {
+            window.addEventListener("load", scheduleRefresh, { once: true });
+            cleanups.push(() => window.removeEventListener("load", scheduleRefresh));
+        }
+        document.fonts?.ready.then(scheduleRefresh).catch(() => {});
+
+        let lastHeight = document.documentElement.scrollHeight;
+        const ro = new ResizeObserver(() => {
+            const h = document.documentElement.scrollHeight;
+            if (Math.abs(h - lastHeight) > 2) {
+                lastHeight = h;
+                scheduleRefresh();
+            }
+        });
+        ro.observe(document.body);
+        cleanups.push(() => {
+            ro.disconnect();
+            if (refreshTimer) clearTimeout(refreshTimer);
+        });
 
         return () => {
             cleanups.forEach((fn) => fn());

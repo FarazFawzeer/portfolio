@@ -5,7 +5,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Controller, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
 import { testimonials } from "@/data/testimonials";
+import { profile } from "@/data/profile";
 import Image from "next/image";
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
 
 export function Testimonials() {
   const [thumbSwiper, setThumbSwiper] = useState<SwiperClass | null>(null);
@@ -26,7 +36,7 @@ export function Testimonials() {
           <div className="box-counter effectFade fadeUp no-div">
             <div className="wg-counter">
               <p className="counter h1 d-flex font-2 letter-space--2 text-black-72">
-                <span className="number" data-speed="1000" data-to="8">
+                <span className="number" data-speed="1000" data-to={profile.projectsCompleted}>
                   0
                 </span>
                 +
@@ -60,8 +70,13 @@ export function Testimonials() {
             <SwiperSlide key={t.authorName}>
               <div className="head-image">
                 <div className="wrap-image">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <Image loading="lazy" width={236} height={297} src={t.image} alt={t.authorName} />
+                  {t.image ? (
+                    <Image loading="lazy" width={236} height={297} src={t.image} alt={t.authorName} />
+                  ) : (
+                    <div className="author-initials" role="img" aria-label={t.authorName}>
+                      <span className="font-2">{initials(t.authorName)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </SwiperSlide>

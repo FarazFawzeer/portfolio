@@ -8,6 +8,13 @@ export const profile = {
 
   email: "farazfawzeer@gmail.com",
 
+  // Counters shown in the intro and testimonials sections
+  yearsExperience: 4,
+  projectsCompleted: 12,
+
+  // International format, digits only (used for wa.me links)
+  whatsapp: "94771448278",
+
   rotatingNames: [
     "Faraz",
     "Full Stack Developer",

@@ -9,12 +9,10 @@ import { HeaderClock } from "./HeaderClock";
 import { UserSidebar } from "./UserSidebar";
 import { Preloader } from "./Preloader";
 import { Intro } from "./sections/Intro";
-import { IntroV2 } from "./sections/IntroV2";
-import { IntroV3 } from "./sections/IntroV3";
 import { About } from "./sections/About";
-import { AboutV2 } from "./sections/AboutV2";
 import { Education } from "./sections/Education";
 import { Work } from "./sections/Work";
+import { Showcase } from "./sections/Showcase";
 import { Services } from "./sections/Services";
 import { Tech } from "./sections/Tech";
 import { Testimonials } from "./sections/Testimonials";
@@ -33,8 +31,6 @@ export type HomeShellProps = {
     videoSrc?: string;
     bodyClass?: string;
     variant?: "v1" | "v2" | "v3";
-    introVariant?: "v1" | "v2" | "v3";
-    aboutVariant?: "v1" | "v2";
     preloaderDark?: boolean;
 };
 
@@ -45,8 +41,6 @@ export function HomeShell({
     videoSrc,
     bodyClass = "counter-scroll",
     variant = "v1",
-    introVariant,
-    aboutVariant,
     preloaderDark,
 }: HomeShellProps) {
     useBodyThemeClass({ defaultMode });
@@ -66,20 +60,6 @@ export function HomeShell({
     useInfiniteSlide();
     useHeadlineRotate();
     useIsakAnimations();
-
-    const introResolved = introVariant ?? variant;
-
-    const aboutResolved =
-        aboutVariant ?? (variant === "v2" ? "v2" : "v1");
-
-    const IntroComponent =
-        introResolved === "v2"
-            ? IntroV2
-            : introResolved === "v3"
-              ? IntroV3
-              : Intro;
-
-    const AboutComponent = aboutResolved === "v2" ? AboutV2 : About;
 
     const headerOutsideMain = variant === "v2";
     const showMobileMenu = variant !== "v2";
@@ -116,10 +96,11 @@ export function HomeShell({
                         <div className="row">
                             <div className="col-lg-7 col-xl-8 ms-auto">
                                 <div className="wrap-container">
-                                    <IntroComponent />
-                                    <AboutComponent />
+                                    <Intro />
+                                    <About />
                                     <Education />
                                     <Work />
+                                    <Showcase />
                                     <Services />
                                     <Tech />
                                     <Testimonials />

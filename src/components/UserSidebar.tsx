@@ -63,8 +63,8 @@ export function UserSidebar({ variant = "v1" }: UserSidebarProps) {
                 {/* Logo */}
                 <div className="user-logo d-none d-lg-block">
                     <ImageSwitch
-                        light="/assets/images/logo/logo.svg"
-                        dark="/assets/images/logo/logo-2.svg"
+                        light="/assets/images/logo/faraz-logo.svg"
+                        dark="/assets/images/logo/faraz-logo-dark.svg"
                         width={40}
                         height={40}
                     />
@@ -146,7 +146,7 @@ export function UserSidebar({ variant = "v1" }: UserSidebarProps) {
 </a>
                         {/* Download CV */}
                         <a
-                            href="/assets/files/Faraz_Fawzeer_CV.pdf"
+                            href="/assets/files/Faraz_Fawzeer_CV.pdf?v=2026-11"
                             download
                             className="action-down"
                         >

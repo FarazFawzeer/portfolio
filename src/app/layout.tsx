@@ -5,6 +5,10 @@ import BootstrapClient from "@/hooks/BootstrapClient";
 import SmoothScroll from "@/hooks/SmoothScroll";
 import "./globals.scss";
 
+// Set NEXT_PUBLIC_SITE_URL (e.g. in .env.production) to the deployed domain so
+// canonical/OG URLs are absolute and correct.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
     title: {
         default: "Faraz Fawzeer - Full Stack Developer",
@@ -39,23 +43,22 @@ export const metadata: Metadata = {
 
     publisher: "Faraz Fawzeer",
 
-    metadataBase: new URL("https://your-domain.com"), // Replace with your actual domain
+    metadataBase: new URL(siteUrl),
 
     openGraph: {
         title: "Faraz Fawzeer - Full Stack Developer",
         description:
             "Portfolio showcasing full stack development, Laravel applications, Next.js projects, enterprise systems, and modern web solutions.",
-        url: "https://your-domain.com",
+        url: "/",
         siteName: "Faraz Fawzeer Portfolio",
         locale: "en_US",
         type: "website",
-
         images: [
             {
-                url: "/assets/images/og-image.jpg",
+                url: "/assets/images/og-image.png",
                 width: 1200,
                 height: 630,
-                alt: "Faraz Fawzeer Portfolio",
+                alt: "Faraz Fawzeer - Full Stack Developer",
             },
         ],
     },
@@ -65,12 +68,11 @@ export const metadata: Metadata = {
         title: "Faraz Fawzeer - Full Stack Developer",
         description:
             "Full Stack Developer specializing in Laravel, Next.js, Vue.js, React, WordPress, and scalable web applications.",
-        images: ["/assets/images/og-image.jpg"],
+        images: ["/assets/images/og-image.png"],
     },
 
     icons: {
-        icon: "/assets/images/logo/favicon.ico",
-        shortcut: "/assets/images/logo/favicon.ico",
+        icon: "/assets/images/logo/faraz-favicon.svg",
         apple: "/assets/images/logo/apple-touch-icon.png",
     },
 };

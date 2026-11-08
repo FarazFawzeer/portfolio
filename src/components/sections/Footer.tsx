@@ -18,11 +18,11 @@ Make it work, make it right, make it fast.
     FARAZ
 </h1>
         </div>
-        <a href="#" className="f-logo effectFade fadeZoom">
+        <a href="#home" className="f-logo effectFade fadeZoom" aria-label="Back to top">
           <div className="logo">
             <ImageSwitch
-              light="/assets/images/logo/logo.svg"
-              dark="/assets/images/logo/logo-2.svg"
+              light="/assets/images/logo/faraz-logo.svg"
+              dark="/assets/images/logo/faraz-logo-dark.svg"
               width={32}
               height={32}
             />

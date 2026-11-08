@@ -18,12 +18,19 @@ export function Education() {
             <div className="timeline-dot" />
             <div className="timeline-content">
               <div className="icon">
-                <ImageSwitch
-                  light={item.icon.light}
-                  dark={item.icon.dark}
-                  width={item.icon.width}
-                  height={item.icon.height}
-                />
+                {item.icon ? (
+                  <ImageSwitch
+                    light={item.icon.light}
+                    dark={item.icon.dark}
+                    width={item.icon.width}
+                    height={item.icon.height}
+                    alt=""
+                  />
+                ) : (
+                  <span className="timeline-initials text-caption fw-medium" aria-hidden="true">
+                    {item.initials}
+                  </span>
+                )}
               </div>
               <p className="timeline-role fw-medium text-black-72">{item.role}</p>
               <p className="timeline-desc text-body-3 text-black-56">{item.description}</p>

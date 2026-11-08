@@ -7,19 +7,19 @@ type Props = {
 
 export function BodyBackground({
   showCloudItem = true,
-  showVideo = true,
+  showVideo = false,
   containerClass = "",
-  videoSrc = "/assets/images/overlay-2.mp4",
+  videoSrc,
 }: Props = {}) {
   return (
     <div className={`body-background${containerClass ? " " + containerClass : ""}`}>
       {showCloudItem && (
         <div className="bg-item">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img loading="lazy" width={1440} height={900} src="/assets/images/item/cloud-bg.png" alt="background" />
+          <img loading="lazy" width={1440} height={900} src="/assets/images/item/cloud-bg.png" alt="" />
         </div>
       )}
-      {showVideo && (
+      {showVideo && videoSrc && (
         <div className="bg-video video-dark">
           <video className="video" muted autoPlay loop playsInline>
             <source src={videoSrc} type="video/mp4" />

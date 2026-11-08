@@ -1,5 +1,11 @@
 import { works } from "@/data/works";
 import Image from "next/image";
+import { profile } from "@/data/profile";
+
+function demoRequestUrl(projectTitle: string) {
+    const text = `Hi Faraz, I saw ${projectTitle} in your portfolio and would like to see a demo of the admin system.`;
+    return `https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(text)}`;
+}
 
 export function Work() {
     return (
@@ -47,7 +53,7 @@ export function Work() {
                                                     width={40}
                                                     height={40}
                                                     src={w.logo}
-                                                    alt="logo"
+                                                    alt={`${w.title} logo`}
                                                 />
                                             </div>
 
@@ -99,7 +105,7 @@ export function Work() {
                                             <div className="br-line" />
 
                                             {/* Project links */}
-                                            {(w.liveUrl || w.githubUrl) && (
+                                            {(w.liveUrl || w.githubUrl || w.demoVideoUrl) && (
                                                 <div className="project-links">
                                                     {w.liveUrl && (
                                                         <a
@@ -108,7 +114,18 @@ export function Work() {
                                                             rel="noopener noreferrer"
                                                             className="project-link"
                                                         >
-                                                            Live Demo
+                                                            Live Site
+                                                        </a>
+                                                    )}
+
+                                                    {w.demoVideoUrl && (
+                                                        <a
+                                                            href={w.demoVideoUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="project-link"
+                                                        >
+                                                            ▶ Watch Demo
                                                         </a>
                                                     )}
 
@@ -127,18 +144,18 @@ export function Work() {
 
                                             <div className="group-action">
 
-                                                {/* Keep your CTA (optional) */}
+                                                {/* Request a demo: opens WhatsApp with the project pre-filled */}
                                                 <a
-                                                     href="https://wa.me/94771448278"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="tf-btn-action style-white"
+                                                    href={demoRequestUrl(w.title)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="tf-btn-action style-white"
                                                 >
                                                     <span className="ic-wrap">
                                                         <i className="icon icon-arrow-right-top" />
                                                     </span>
                                                     <span className="text text-body-3 letter-space--05 fw-medium">
-                                              Chat on WhatsApp
+                                                        Request a Demo
                                                     </span>
                                                     <span className="ic-wrap">
                                                         <i className="icon icon-arrow-right-top" />
